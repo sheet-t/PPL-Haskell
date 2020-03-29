@@ -2,7 +2,7 @@
 
 -- CS 3210 - Principles of Programming Languages - Spring 2020
 -- Programming Assignment 02 - The N-queens Problem
--- Author(s):
+-- Author(s): 
 
 import Data.List
 import GHC.Char
@@ -67,7 +67,6 @@ allMainDiagIndices b = [mainDiagIndices b i | i <- [0..(diagonals b) - 1]]
 
 -- TODOd 12/17
 mainDiag :: Board -> [Seq]
--- mainDiag b = [[(b !! y) !! x | (x,y) <- diag ] diag <- allMainDiagIndices b]
 mainDiag b = map (\diag -> map (\(x,y) -> (b !! y) !! x ) diag ) $ allMainDiagIndices b
 
 secDiagIndices :: Board -> Int -> [ (Int, Int) ]
@@ -82,7 +81,6 @@ allSecDiagIndices b = [secDiagIndices b i | i <- [0..(diagonals b) -1 ]]
 
 -- TODOd 14/17
 secDiag :: Board -> [Seq]
--- secDiag b = [[(b !! y) !! x | (x,y) <- diag ] diag <- allSecDiagIndices b]
 secDiag b = map (\diag -> map (\(x,y) -> (b !! y) !! x ) diag ) $ allSecDiagIndices b
 
 -- TODOd 15/17
