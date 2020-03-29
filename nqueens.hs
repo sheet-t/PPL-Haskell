@@ -5,49 +5,55 @@
 -- Author(s):
 
 import Data.List
+import GHC.Char
 
 type Seq   = [Char]
 type Board = [Seq]
 
--- TODO 01/17
+count :: (a -> Bool) -> [a] -> Int
+count pred = length . filter pred
+
+-- TODOd 01/17
 setup :: Int -> Board
-setup n = [[(x, y) | y <- [1..n]] | x <- [1..n] ]
+setup n = [[ '-' | y <- [1..n4]] | x <- [1..n4] ]
+  where n4 = max n 4
 
--- TODO 02/17
+-- TODOd 02/17
 rows :: Board -> Int
-rows b = 0
+rows = length
 
--- TODO 03/17
+-- TODOd 03/17
 cols :: Board -> Int
-cols b = 0
+cols = length . head
 
--- TODO 04/17
+-- TODOd 04/17
 size :: Board -> Int
-size b = 0
+size b = if rows b == cols b then rows b else 0
 
--- TODO 05/17
+-- TODOd 05/17
 queensSeq :: Seq -> Int
-queensSeq s = 0
+queensSeq = count $ eqChar 'Q'
 
--- TODO 06/17
+-- TODOd 06/17
 queensBoard :: Board -> Int
-queensBoard b = 0
+queensBoard = sum . map queensSeq
 
--- TODO 07/17
+-- TODOd 07/17
 seqValid :: Seq -> Bool
-seqValid s = False
+seqValid s = queensSeq s <= 1
 
--- TODO 08/17
+-- TODOd 08/17
 rowsValid :: Board -> Bool
-rowsValid b = False
+rowsValid b = all seqValid b
 
--- TODO 09/17
+-- TODOd 09/17
 colsValid :: Board -> Bool
-colsValid b = False
+colsValid b = all seqValid (colWise b)
+  where colWise b = [[ (b!!y)!!x | y <- [0..(size b) - 1 ]] | x <- [0..(size b) - 1 ]]
 
--- TODO 10/17
+-- TODOd 10/17
 diagonals :: Board -> Int
-diagonals b = 0
+diagonals b = 2 * (size b) - 1
 
 mainDiagIndices :: Board -> Int -> [ (Int, Int) ]
 mainDiagIndices b p
@@ -55,13 +61,14 @@ mainDiagIndices b p
   | otherwise = [ (q, (n - 1 - qr)) | q <- [0..2 * (n - 1) - p] | qr <- [2 * (n - 1) - p,2 * (n - 1) - p - 1..0] ]
   where n = size b
 
--- TODO 11/17
+-- TODOd 11/17
 allMainDiagIndices :: Board -> [[ (Int, Int) ]]
-allMainDiagIndices b = [[]]
+allMainDiagIndices b = [mainDiagIndices b i | i <- [0..(diagonals b) - 1]]
 
--- TODO 12/17
+-- TODOd 12/17
 mainDiag :: Board -> [Seq]
-mainDiag b = []
+-- mainDiag b = [[(b !! y) !! x | (x,y) <- diag ] diag <- allMainDiagIndices b]
+mainDiag b = map (\diag -> map (\(x,y) -> (b !! y) !! x ) diag ) $ allMainDiagIndices b
 
 secDiagIndices :: Board -> Int -> [ (Int, Int) ]
 secDiagIndices b p
@@ -69,25 +76,26 @@ secDiagIndices b p
   | otherwise = [ (p - (n - 1 - q), n - 1 - q) | q <- [2 * (n - 1) - p, 2 * (n - 1) - p - 1..0] ]
   where n = size b
 
--- TODO 13/17
+-- TODOd 13/17
 allSecDiagIndices :: Board -> [[ (Int, Int) ]]
-allSecDiagIndices b = [[]]
+allSecDiagIndices b = [secDiagIndices b i | i <- [0..(diagonals b) -1 ]]
 
--- TODO 14/17
+-- TODOd 14/17
 secDiag :: Board -> [Seq]
-secDiag b = []
+-- secDiag b = [[(b !! y) !! x | (x,y) <- diag ] diag <- allSecDiagIndices b]
+secDiag b = map (\diag -> map (\(x,y) -> (b !! y) !! x ) diag ) $ allSecDiagIndices b
 
--- TODO 15/17
+-- TODOd 15/17
 diagsValid :: Board -> Bool
-diagsValid b = False
+diagsValid b = all seqValid (mainDiag b ++ secDiag b)
 
--- TODO 16/17
+-- TODOd 16/17
 valid :: Board -> Bool
-valid b = False
+valid b = rowsValid b && colsValid b && diagsValid b
 
--- TODO 17/17 (¡Phew!)
+-- TODOd 17/17 (¡Phew!)
 solved :: Board -> Bool
-solved b = False
+solved b = valid b && size b == queensBoard b
 
 setQueenAt :: Board -> Int -> [Board]
 setQueenAt b i = do
